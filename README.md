@@ -58,6 +58,12 @@ Bus 001 Device 007: ID 0bda:b851 Realtek Semiconductor Corp.
 > [!TIP] 
 > You can check `sudo dmesg` for clues of which mode your device is right after plugging it
 
+> [!IMPORTANT]
+> To auto switch mode when the device is connected, edit/create a file like this `$ sudo nano /etc/udev/rules.d/99-com.rules` and add:
+> ```
+> SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="/bin/bash -c 'usb_modeswitch -K -v 0bda -p 1a2b'"
+> ```
+
 <br/>
 
 # Compilling
@@ -69,8 +75,17 @@ $ make
 $ sudo make install
 $ sudo modprobe 8851bu
 ```
+From now on the driver should load automatically whenever the device is connected
+
 > [!WARNING] 
 > if autodetect doesn't work, you have to manually set `y` to your architecture in the `Makefile` and put autodetect to `n`
+
+> [!IMPORTANT]
+> If you downloaded the driver .ko file, just copy it to your kernel folder and run depmod, ex:
+> ```
+> $ sudo cp 8851bu.ko /lib/modules/5.10.103+/kernel/drivers/net/wireless/realtek/
+> $ sudo depmod -a
+> ```
 
 <br/>
 
